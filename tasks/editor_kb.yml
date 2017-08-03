@@ -1,0 +1,17 @@
+---
+# Editor key behaviour
+- name: Ensure proper key behaviour is set for editor
+  shell: "{{ item }}"
+  with_items:
+    # Enable key repeat for Vim-mode
+    - defaults write {{ gui_editor }} ApplePressAndHoldEnabled -bool false
+    # Disable automatic capitalization as it’s annoying when typing code
+    - defaults write {{ gui_editor }} NSAutomaticCapitalizationEnabled -bool false
+    # Disable smart dashes as they’re annoying when typing code
+    - defaults write {{ gui_editor }} NSAutomaticDashSubstitutionEnabled -bool false
+    # Disable automatic period substitution as it’s annoying when typing code
+    - defaults write {{ gui_editor }} NSAutomaticPeriodSubstitutionEnabled -bool false
+    # Disable smart quotes as they’re annoying when typing code
+    - defaults write {{ gui_editor }} NSAutomaticQuoteSubstitutionEnabled -bool false
+    # Disable auto-correct
+    - defaults write {{ gui_editor }} NSAutomaticSpellingCorrectionEnabled -bool false

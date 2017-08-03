@@ -1,0 +1,211 @@
+---
+# Atom
+#- name: Remove local Atom directory
+#  file:
+#    path: "~/.atom"
+#    state: absent
+#    when: ".atom.stat.isdir" is defined and ".atom.stat.isdir"
+#
+#- name: Link Atom directory from repo
+#  file:
+#    src: "~/dotfiles/.atom"
+#    path: "~/.atom"
+#    state: link
+
+# Chrome
+- name: Set better Chrome defaults
+  shell: "{{ item }}"
+  with_items:
+    # Disable the all too sensitive backswipe on trackpads
+    - defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
+    # Disable the all too sensitive backswipe on Magic Mouse
+    - defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
+    # Use the system-native print preview dialog
+    - defaults write com.google.Chrome DisablePrintPreview -bool true
+    # Expand the print dialog by default
+    - defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
+
+# Pixelmator
+- name: Set better Pixelmator defaults
+  shell: "{{ item }}"
+  with_items:
+    # Speed up Pixelmator by disabling the Intel HD3000 fix, don't use on 2011 Macs!
+    # http://support.pixelmator.com/viewtopic.php?f=5&t=14650
+    defaults write com.pixelmatorteam.pixelmator PXCEnableOpenCLCPUBlit -bool false
+
+# Spectacle
+- name: Link Spectacle shortcuts from repo
+  file:
+    src: "~/dotfiles/spectacle_shortcuts"
+    path: "~/Library/Application Support/Spectacle/Shortcuts.json"
+    state: link
+    force: yes
+
+# Sublime
+- name: Remove Sublime Text User directory
+  file:
+    path: "~/Library/Application Support/Sublime Text 3/Packages/User"
+    state: absent
+    when: User.stat.isdir is defined and User.stat.isdir
+
+- name: Link Sublime Text directory from repo
+  file:
+    src: "~/dotfiles/.sublime-text/User"
+    path: "~/Library/Application Support/Sublime Text 3/Packages/User"
+    state: link
+
+- name: Copy Sublime Text Package Control
+  copy:
+    src: "~/dotfiles/.sublime-text/Installed Packages/Package Control.sublime-package"
+    dest: "~/Library/Application Support/Sublime Text 3/Packages/Installed Packages/Package Control.sublime-package"
+
+# iTerm2
+#- name: Set better iTerm2 defaults
+#  shell: "{{ item }}"
+#  with_items:
+#    # Enable Secure Keyboard Entry in iTerm2
+#    # See: https://security.stackexchange.com/a/47786/8918
+#    - defaults write com.googlecode.iterm2 "Secure Input" -bool true
+#    # Use the Oceanic Next Dark theme in iTerm2
+#    - open "${HOME}/dotfiles/assets/themes/Oceanic_Next_iTerm2" && sleep 5 && osascript -e 'quit app "iTerm2"'
+#    # Set font and font size in iTerm2
+#    - sed -i "" 's/Monaco\ 12/SourceCodePro-Regular\ 15/g' "${HOME}/Library/Preferences/com.googlecode.iterm2.plist" 1>/dev/null
+#    # Don’t display the annoying prompt when quitting iTerm2
+#    - defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+#    # Hide tip of the day
+#    - defaults write com.googlecode.iterm2 NoSyncTipsDisabled -bool true
+#    # Fix window manager (Magnet.me, Spectacle, Moom) resizing bug
+#    # https://gitlab.com/gnachman/iterm2/issues/4771
+#    - defaults write com.googlecode.iterm2 DisableWindowSizeSnap -bool true
+#    # Enable arrow scrolling behaviour in iTerm2
+#    - defaults write com.googlecode.iterm2 AlternateMouseScroll -bool true
+#    # Use the Oceanic Next Dark theme in iTerm2
+#    - open "${HOME}/dotfiles/assets/themes/Oceanic_Next_iTerm2" && sleep 5 && osascript -e 'quit app "iTerm2"'
+
+# Terminal.app
+- name: Get current Terminal profile.
+  shell: defaults read com.apple.terminal 'Default Window Settings'
+  register: terminal_theme
+  changed_when: false
+  always_run: yes
+
+- name: Ensure custom Terminal profile is added.
+  shell: open files/terminal/Oceanic_Next_Terminal-app.terminal
+  when: "'Oceanic_Next_Terminal-app' not in terminal_theme.stdout"
+
+# TODO: This doesn't work in Yosemite. Consider a different solution?
+#- name: Ensure custom Terminal profile is set as default.
+#  shell: "{{ item }}"
+#  with_items:
+#    - defaults write com.apple.terminal 'Default Window Settings' -string Oceanic_Next_Terminal-app
+#    - defaults write com.apple.terminal 'Startup Window Settings' -string Oceanic_Next_Terminal-app
+#  changed_when: false
+#  when: "'Oceanic_Next_Terminal-app' not in terminal_theme.stdout"
+
+# Transmission
+- name: Set better Transmission defaults
+  shell: "{{ item }}"
+  with_items:
+    # Set ~/Downloads as the default download directory
+    - defaults write org.m0k.transmission DownloadLocationConstant -bool true
+    # Automatically load .torrent files in ~/Downloads
+    - defaults write org.m0k.transmission AutoImport -bool true
+    - defaults write org.m0k.transmission AutoImportDirectory-string "${HOME}/Downloads"
+    # Trash original torrent file after adding
+    - defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
+    # Auto-resize the window to fit transfers
+    - defaults write org.m0k.transmission AutoSize -bool true
+    # Hide status bar
+    - defaults write org.m0k.transmission StatusBar -bool false
+    # Only show download speed on Dock icon
+    - defaults write org.m0k.transmission BadgeDownloadRate -bool true
+    - defaults write org.m0k.transmission BadgeUploadRate -bool false
+    # Prevent silent quit when downloading
+    - defaults write org.m0k.transmission CheckQuitDownloading -bool true
+    - defaults write org.m0k.transmission CheckRemoveDownloading -bool true
+    # Don't prompt for confirmation before downloading
+    - defaults write org.m0k.transmission DownloadAsk -bool false
+    - defaults write org.m0k.transmission MagnetOpenAsk -bool false
+    # Make Transmission somewhat safer to use
+    # Using a VPN is still strongly advised
+    - defaults write org.m0k.transmission EncryptionRequire -bool true
+    - defaults write org.m0k.transmission RandomPort -bool true
+    # Hide the legal disclaimer
+    - defaults write org.m0k.transmission WarningLegal -bool false
+    # Hide the donation message
+    - defaults write org.m0k.transmission WarningDonate -bool false
+
+# Textual
+- name: Set better Textual defaults
+  # Disable smart quotes as they’re annoying when typing code
+  shell: defaults write com.codeux.irc.textual5 NSAutomaticQuoteSubstitutionEnabled -bool false
+
+# Visual Studio Code
+#- name: Link Visual Studio Code directory from repo
+#  file:
+#    src: "~/dotfiles/.vscode/User"
+#    path: "~/Library/Application Support/Code/User"
+#    state: link
+
+# Xcode
+- name: Link Xcode themes from repo
+  file:
+    src: "~/dotfiles/assets/themes/FontAndColorThemes"
+    path: "~/Library/Developer/Xcode/UserData/FontAndColorThemes"
+    state: link
+
+# Vim
+- name: Remove Vim directory
+  file:
+    path: "~/.vim"
+    state: absent
+    when: .vim.stat.isdir is defined and .vim.stat.isdir
+
+- name: Link Vim directory from repo
+  file:
+    src: "~/dotfiles/.vim"
+    path: "~/.vim"
+    state: link
+
+# .config (XDG base config folder)
+- name: Remove .config directory
+  file:
+    path: "~/.config"
+    state: absent
+    when: .config.stat.isdir is defined and .config.stat.isdir
+
+- name: Link .config directory from repo
+  file:
+    src: "~/dotfiles/.config"
+    path: "~/.config"
+    state: link
+
+# Scripts
+- name: Remove Scripts directory
+  file:
+    path: "~/scripts"
+    state: absent
+    when: scripts.stat.isdir is defined and scripts.stat.isdir
+
+- name: Link scripts directory from repo
+  file:
+    src: "~/dotfiles/scripts"
+    path: "~/scripts"
+    state: link
+
+# DUTI
+- name: Set file assocations
+  shell: "{{ item }}"
+  with_items:
+    # Bundle id                            UTI/.ext/MIME-type  role
+    # Sublime Text
+    - duti -s com.sublimetext.3            public.source-code  editor
+    # The Unarchiver
+    - duti -s cx.c3.theunarchiver          public.archive      all
+    # Disk Image Mounter
+    - duti -s com.apple.DiskImageMounter   .dmg                all
+    # Transmission
+    - duti -s org.m0k.transmission         .torrent            all
+    - duti -s org.m0k.Transmission         magnet
+    # VLC
+    - duti -s org.videolan.vlc             public.movie        viewer

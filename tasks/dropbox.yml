@@ -1,0 +1,100 @@
+---
+# GPG
+- name: Remove GPG directory
+  file:
+    path: "~/.gnupg"
+    state: absent
+    when: .gnupg.stat.isdir is defined and .gnupg.stat.isdir
+
+- name: Link GPG directory from Dropbox
+  file:
+    src: "~/dropbox/dev/dotfiles/.gnupg"
+    path: "~/.gnupg"
+    owner: jvisser
+    state: link
+  file:
+    path: "~/.gnupg/*"
+    mode: u+rw
+  file:
+    path: "~/.gnupg/private-keys-v1.d/"
+    mode: u+rwx
+
+# SSH
+- name: Remove SSH directory
+  file:
+    path: "~/.ssh"
+    state: absent
+    when: .ssh.stat.isdir is defined and .ssh.stat.isdir
+
+- name: Link SSH directory from Dropbox
+  file:
+    src: "~/dropbox/dev/dotfiles/.ssh"
+    path: "~/.ssh"
+    owner: jvisser
+    state: link
+  file:
+    path: "~/.ssh"
+    mode: u+rwx
+  file:
+    path: "~/.ssh/id_rsa"
+    mode: u+rw
+  file:
+    path: "~/.ssh/id_rsa.pub"
+    mode: u+rw,g+r,o+r
+
+# Private settings
+- name: Link private settings from Dropbox
+  file:
+    src: "~/dropbox/dev/dotfiles/.private"
+    path: "~/.private"
+    state: link
+    force: yes
+
+# Documents
+- name: Copy local Documents directory
+  copy:
+    src: "~/Documents/"
+    dest: "~/Dropbox/Documents"
+
+- name: Remove local Documents directory
+  file:
+    path: "~/Documents"
+    state: absent
+    when: "Documents.stat.isdir" is defined and "Documents.stat.isdir"
+
+- name: Link Documents directory from Dropbox
+  file:
+    src: "~/Dropbox/Documents"
+    path: "~/Documents"
+    state: Link
+
+# Pictures
+- name: Copy local Pictures directory
+  copy:
+    src: "~/Pictures/"
+    dest: "~/Dropbox/Pictures"
+
+- name: Remove local Pictures directory
+  file:
+    path: "~/Pictures"
+    state: absent
+    when: "Pictures.stat.isdir" is defined and "Pictures.stat.isdir"
+
+- name: Link Pictures directory from Dropbox
+  file:
+    src: "~/Dropbox/Pictures"
+    path: "~/Pictures"
+    state: Link
+
+# Calibre
+- name: Remove Calibre directory
+  file:
+    path: "~/Calibre Library"
+    state: absent
+    when: "Calibre Library.stat.isdir" is defined and "Calibre Library.stat.isdir"
+
+- name: Link Calibre library from Dropbox
+  file:
+    src: "~/Dropbox/eBooks"
+    path: "~/Calibre Library"
+    state: Link

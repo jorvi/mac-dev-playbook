@@ -2,79 +2,73 @@
 downloads: ~/.ansible-downloads/
 
 configure_dotfiles: yes
-configure_sudoers: yes
+configure_sudoers: no
 configure_terminal: yes
-configure_osx: yes
+configure_macos: yes
 
 dotfiles_repo: https://github.com/geerlingguy/dotfiles.git
 dotfiles_repo_accept_hostkey: yes
-dotfiles_repo_local_destination: ~/Dropbox/Development/GitHub/dotfiles
+dotfiles_repo_local_destination: ~/dotfiles
 dotfiles_files:
   - .bash_profile
   - .gitignore
   - .inputrc
-  - .osx
+  - .macos
   - .vimrc
 
 homebrew_installed_packages:
-  # - ansible # Installed via Pip.
-  - autoconf
-  - bash-completion
-  - chromedriver
-  - doxygen
-  - gettext
-  - gifsicle
-  - git
-  - go
-  - gpg
-  - hub
-  - httpie
-  - iperf
-  - libevent
-  - sqlite
-  - mcrypt
-  - nmap
+  # - ansible -> Installed via Pip.
+  # Core
   - node
-  - nvm
-  - ssh-copy-id
-  - cowsay
-  - readline
-  - openssl
-  - pv
-  - wget
-  - wrk
+  # Dev
+  - bash
+  - python
+  - python3
+  - ruby
+  - vim
+  - zsh
 
 homebrew_taps:
   - homebrew/core
   - caskroom/cask
-  - homebrew/php
+  - homebrew/fonts
+  - homebrew/versions
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
-  - docker
-  - dropbox
-  # - fing # Download link keeps getting changed, d'oh!
-  - firefox
-  - google-chrome
-  - handbrake
-  - licecap
-  - limechat
-  - macvim
-  - nvalt
-  - sequel-pro
-  - skitch
-  - slack
+  # Dev
+  - androidtools
+  - chrome
   - sublime-text
-  - transmit
-  - vagrant
-  - virtualbox
+  - the-unarchiver
+  # Personal
+  - aiparrot
+  - calibre
+  - dropbox
+  - etcher
+  - fork
+  - microsoft-office
+  #- ransomwhere -> prevents other app installations
+  - spectacle
+  - spotify
+  - telegram
+  - textual
+  - transmission
+  - vlc
+  - viscosity
+  - whatsapp
 
 # See `geerlingguy.mas` role documentation for usage instructions.
-mas_installed_apps: []
+mas_installed_apps:
+  # Dev
+  - { id: 497799835, name: "Xcode" }
+  # Personal
+  - { id: 937984704, name: "Amphetamine" }
+  - { id: 407963104, name: "Pixelmator" }
 mas_email: ""
 mas_password: ""
 
-osx_script: "~/.osx --no-restart"
+macos_script: "~/.macos"
 
 # Install packages from other package managers.
 # Note: You are responsible for making sure the required package managers are
@@ -87,10 +81,10 @@ gem_packages: []
   # - name: bundler
   #   state: present # present/absent/latest, default: present
   #   version: "~> 1.15.1" # default: N/A
-npm_packages: []
-  # - name: webpack
-  #   state: present # present/absent/latest, default: present
-  #   version: "^2.6" # default: N/A
+npm_packages:
+  - name: eslint
+    state: latest # present/absent/latest, default: present
+  #  version: "^2.6" # default: N/A
 pip_packages: []
   # - name: mkdocs
   #   state: present # present/absent/latest, default: present

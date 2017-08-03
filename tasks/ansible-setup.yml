@@ -6,12 +6,12 @@
 
 - name: Ensure /etc/ansible directory exists.
   file:
-    path: /etc/ansible
+    path: "/etc/ansible"
     state: directory
   become: yes
 
 - name: Symlink /usr/local/etc/ansible to /etc/ansible.
   file:
-    src: /etc/ansible
-    path: /usr/local/etc/ansible
+    src: "/etc/ansible"
+    path: "/usr/local/etc/ansible"
     state: link
