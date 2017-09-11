@@ -167,6 +167,20 @@
     path: "~/.vim"
     state: link
 
+# Zsh
+- name: Determine if zsh is default/current shell
+  shell: echo $SHELL
+  register: current_shell
+
+- name: Enable zsh in /etc/shells
+  shell: sudo /bin/sh -c 'grep -q "{{ zsh_path }}" /etc/shells || echo "{{ zsh_path }}" >> /etc/shells'
+  when: current_shell.stdout != '/usr/local/bin/zsh'
+
+- name: Set zsh as default shell
+  shell: chsh -s {{ zsh_path }}
+  when: current_shell.stdout != '/usr/local/bin/zsh'
+  become_user: root
+
 # .config (XDG base config folder)
 - name: Remove .config directory
   file:
@@ -207,5 +221,5 @@
     # Transmission
     - duti -s org.m0k.transmission         .torrent            all
     - duti -s org.m0k.Transmission         magnet
-    # VLC
-    - duti -s org.videolan.vlc             public.movie        viewer
+    # IINA (better VLC)
+    - duti -s com.colliderli.iina          public.movie        viewer
