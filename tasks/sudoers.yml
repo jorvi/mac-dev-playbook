@@ -18,4 +18,4 @@
     dest: /etc/sudoers
     mode: 0440
     validate: 'visudo -cf %s'
-  become: yes
+  become_user: root

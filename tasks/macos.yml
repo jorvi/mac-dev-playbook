@@ -1,5 +1,5 @@
 ---
-# TODO: Use sudo once .macos can be run via root with no user interaction.
-- name: Run .macos dotfile.
+# TODO: Use sudo once macos.sh can be run via root with no user interaction.
+- name: Run macos setup script.
   shell: "{{ macos_script }}"
-  changed_when: false
+  become_user: root
